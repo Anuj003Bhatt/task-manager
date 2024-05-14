@@ -1,0 +1,16 @@
+<div class="container py-5">
+        <button class="btn btn-success float-right" (click)="newTaskNavigate()">Add Task</button>
+    <div class="row">
+        <div class="input-group">
+            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <button type="button" class="btn btn-outline-primary" data-mdb-ripple-init>search</button>
+        </div>
+    </div>
+    <div class="py-5">
+        <mat-grid-list cols="4">
+            <mat-grid-tile *ngFor="let task of tasks">
+                <app-task-item [task]="task"></app-task-item>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+</div>

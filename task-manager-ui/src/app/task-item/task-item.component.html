@@ -1,0 +1,23 @@
+<mat-card style="height: fit-content; width: 300px; padding: auto;" class="bg-dark text-white">
+  <mat-card-header style="display: flex;">
+    <mat-card-title>{{task.title}}</mat-card-title>
+    <mat-card-subtitle class="mb-3" [ngSwitch]="task.status.toUpperCase()">
+      <span class="badge bg-warning" *ngSwitchCase="'TODO'">To Do</span>
+      <span *ngSwitchCase="'INPROGRESS'" class="badge bg-primary">In Progress</span>
+      <span *ngSwitchCase="'DONE'" class="badge bg-success">Complete</span>
+      <span *ngSwitchDefault class="badge bg-danger">Invalid Status</span>
+    </mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <p>{{task.description}}</p>
+  </mat-card-content>
+
+  <mat-card-footer style="margin-top: 30px; padding-bottom: 20px;">
+    <mat-card-actions>
+      <button class="btn btn-primary" mat-button><i class="fa fa-edit"></i></button>
+      <button style="margin-left: 15px;" class="btn btn-danger" mat-button><i class="fa fa-trash-o fa-lg"></i></button>
+    </mat-card-actions>
+  </mat-card-footer>
+  
+</mat-card>
