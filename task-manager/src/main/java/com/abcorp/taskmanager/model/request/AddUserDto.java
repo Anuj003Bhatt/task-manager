@@ -19,6 +19,8 @@ public class AddUserDto {
     @NotBlank(message = "Name for a user cannot be blank")
     @Schema(example = "John Doe")
     private String name;
+    @NotBlank(message = "Password for a user cannot be blank")
+    private String password;
     @Email(message = "Email ID provided is not valid")
     @NotBlank
     @Schema(example = "abc@xyz.com")

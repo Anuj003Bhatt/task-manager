@@ -1,1 +1,68 @@
-<p>new-task works!</p>
+<div class="rootContainer">
+    <div class="container">
+    <a role="button" class="pull-right" (click)="closeDialog()"><i class="fa fa-times" aria-hidden="true"></i></a>
+</div>
+<div class="container">
+        <div class="text-center name">
+            <h2>Create Task</h2>
+        </div>
+        <div>
+            <form (ngSubmit)="onCreateTask()" #taskForm="ngForm">
+              <label for="title">Title</label>
+              <input
+                    class="form-control"
+                    type="text"
+                    name="title"
+                    id="title"
+                    placeholder="Enter title"
+                    [(ngModel)]="taskTitle"
+                    #titleInput="ngModel"
+                    required
+                >
+          
+              <label for="description">Description</label>
+              <textarea
+                cdkTextareaAutosize
+                class="form-control"
+                type="text"
+                name="description"
+                id="description"
+                maxlength="4000"
+                [(ngModel)]="taskDescription"
+                placeholder="Description..."
+                #descriptionInput="ngModel"
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="5"></textarea>
+          
+              <label for="status">Status</label>
+              <select
+                name="status"
+                id="status"
+                class="form-control"
+                [(ngModel)]="taskStatus"
+                #statusInput="ngModel"
+                >
+                <option value="0">To Do</option>
+                <option value="1">In Progress</option>
+                <option value="2">Complete</option>
+              </select>
+
+              <label for="priority">Priority</label>
+              <select name="priority"
+                id="priority"
+                class="form-control"
+                [(ngModel)]="taskPriority"
+                #priorityInput="ngModel"
+            >
+                <option value="0">Low</option>
+                <option value="1">Medium</option>
+                <option value="2">High</option>
+                <option value="3">Critical</option>
+                <option value="4">Blocker</option>
+              </select>
+            
+              <button class="btn btn-success" [disabled]="!taskForm.valid" type="submit"> Save</button>
+            </form>
+          </div>
+</div>
+</div>

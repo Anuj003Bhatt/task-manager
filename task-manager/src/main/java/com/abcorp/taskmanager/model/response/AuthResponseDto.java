@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class SignupResponseDto {
+public class AuthResponseDto {
     private UserDto user;
     private String authToken;
 }

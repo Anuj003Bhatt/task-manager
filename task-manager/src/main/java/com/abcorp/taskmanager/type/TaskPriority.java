@@ -1,6 +1,7 @@
 package com.abcorp.taskmanager.type;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum TaskPriority {
     LOW((short)0),
@@ -13,6 +14,11 @@ public enum TaskPriority {
 
     TaskPriority(short status) {
         this.priority = status;
+    }
+
+    @JsonValue
+    public short getPriority() {
+        return this.priority;
     }
 
     @JsonCreator

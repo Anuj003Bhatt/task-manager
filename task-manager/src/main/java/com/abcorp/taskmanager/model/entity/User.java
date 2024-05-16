@@ -1,5 +1,6 @@
 package com.abcorp.taskmanager.model.entity;
 
+import com.abcorp.taskmanager.converter.OneWayCryptoConverter;
 import com.abcorp.taskmanager.converter.TwoWayCryptoConverter;
 import com.abcorp.taskmanager.model.base.DtoBridge;
 import com.abcorp.taskmanager.model.response.UserDto;
@@ -43,6 +44,10 @@ public class User extends BaseAuditable implements DtoBridge<UserDto> {
     @Convert(converter = TwoWayCryptoConverter.class)
     private String email;
 
+    @Column(name = "password")
+    @Convert(converter = OneWayCryptoConverter.class)
+    private String password;
+
     @Column(name = "phone")
     @Convert(converter = TwoWayCryptoConverter.class)
     private String phone;
@@ -59,6 +64,7 @@ public class User extends BaseAuditable implements DtoBridge<UserDto> {
                 .builder()
                 .id(id)
                 .phone(phone)
+                .email(email)
                 .status(status)
                 .name(name)
                 .build();

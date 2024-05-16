@@ -1,5 +1,6 @@
 package com.abcorp.taskmanager.controller;
 
+import com.abcorp.taskmanager.exception.BadRequestException;
 import com.abcorp.taskmanager.model.request.AddTaskDto;
 import com.abcorp.taskmanager.model.response.ListResponse;
 import com.abcorp.taskmanager.model.response.TaskDto;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Task")
+@CrossOrigin
 public class TaskController {
     private final TaskService taskService;
 
@@ -45,7 +48,7 @@ public class TaskController {
     })
     @PostMapping("users/{userId}/tasks/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskDto signup(
+    public TaskDto addTask(
             @PathVariable("userId") UUID userId,
             @RequestBody @Valid AddTaskDto addTaskDto
     ) {
@@ -61,8 +64,8 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "No user found for ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("users/{userid}/tasks/list")
-    public ListResponse<TaskDto> listUsers(
+    @GetMapping("users/{userId}/tasks/list")
+    public ListResponse<TaskDto> listTasks(
             @PathVariable("userId") UUID userId,
             @PageableDefault(size = 20)
             @SortDefault.SortDefaults({
@@ -80,8 +83,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Updated Task in response"),
             @ApiResponse(responseCode = "404", description = "No user found for ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @PutMapping("users/{userid}/tasks/{taskId}")
+    })//users/67d12074-8290-462b-a205-509251283bea/tasks/c791a28b-55e7-48d6-a758-18885892d4c0
+    @PutMapping("users/{userId}/tasks/{taskId}")
     public TaskDto updateTask(
             @PathVariable("userId") UUID userId,
             @PathVariable("taskId") UUID taskId,

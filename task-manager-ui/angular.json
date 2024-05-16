@@ -39,6 +39,8 @@
               "node_modules/mdbootstrap/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ag-grid-community/styles/ag-grid.min.css",
+              "node_modules/ag-grid-community/styles/ag-theme-quartz.css",
               "src/styles.css"
             ],
             "scripts": []

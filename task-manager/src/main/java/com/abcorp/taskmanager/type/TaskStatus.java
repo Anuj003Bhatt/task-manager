@@ -1,11 +1,17 @@
 package com.abcorp.taskmanager.type;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum TaskStatus {
     TODO((short)0), INPROGRESS((short)1), DONE((short)2);
 
     private short status;
+
+    @JsonValue
+    public short getStatus() {
+        return this.status;
+    }
 
     TaskStatus(short status) {
         this.status = status;

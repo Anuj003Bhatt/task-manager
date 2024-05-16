@@ -1,8 +1,9 @@
 package com.abcorp.taskmanager.controller;
 
 import com.abcorp.taskmanager.model.request.AddUserDto;
+import com.abcorp.taskmanager.model.request.LoginRequestDto;
 import com.abcorp.taskmanager.model.response.ListResponse;
-import com.abcorp.taskmanager.model.response.SignupResponseDto;
+import com.abcorp.taskmanager.model.response.AuthResponseDto;
 import com.abcorp.taskmanager.model.response.UserDto;
 import com.abcorp.taskmanager.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,7 @@ import java.util.UUID;
 @Slf4j
 @RequestMapping("users")
 @Tag(name = "User")
+@CrossOrigin
 public class UserController {
     private final UserService userService;
 
@@ -46,8 +49,21 @@ public class UserController {
     })
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public SignupResponseDto signup(@RequestBody @Valid AddUserDto addUserDto) {
+    public AuthResponseDto signup(@RequestBody @Valid AddUserDto addUserDto) {
         return userService.add(addUserDto);
+    }
+
+    @Operation(
+            summary = "User Login",
+            description = "Verify user login"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login Successful"),
+            @ApiResponse(responseCode = "400", description = "Login Failed")
+    })
+    @PostMapping("/login")
+    public AuthResponseDto login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+        return userService.login(loginRequestDto);
     }
 
     @Operation(

@@ -1,16 +1,39 @@
-<div class="container py-5">
+<div *ngIf="loaded" class="container py-5">
         <button class="btn btn-success float-right" (click)="newTaskNavigate()">Add Task</button>
     <div class="row">
         <div class="input-group">
+            <button style="margin-right: 10px; border-radius: 10%;" class="btn btn-success pull-left" (click)="switchView()">
+                {{
+                    viewAsTile?"View As List":"View As Tile"
+                }}
+            </button>
             <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
             <button type="button" class="btn btn-outline-primary" data-mdb-ripple-init>search</button>
         </div>
     </div>
-    <div class="py-5">
-        <mat-grid-list cols="4">
+        
+    <div class="py-5" *ngIf="tasks !== undefined && tasks.length > 0; else noTasks">
+        <mat-grid-list *ngIf="viewAsTile" [cols]="columns" rowHeight="1:1" gutterSize="10px">
             <mat-grid-tile *ngFor="let task of tasks">
                 <app-task-item [task]="task"></app-task-item>
             </mat-grid-tile>
         </mat-grid-list>
+        <div class="grid-wrapper" *ngIf="!viewAsTile">
+            <ag-grid-angular class="ag-theme-quartz-dark" 
+                class="ag-theme-quartz-dark"
+                style="width: 100%; height: 100%;"
+                (gridReady)="onGridReady($event)"
+                [autoSizeStrategy]="autoSizeStrategy"
+                [rowData]="tasks"
+                [columnDefs]="colDefs">
+            </ag-grid-angular>
+        </div>
+    </div>
+    <ng-template #noTasks><p class="font-italic">You have not created any tasks yet !!</p></ng-template>
+    <div *ngIf="error"><p class="font-italic">{{error}}</p></div>
+</div>
+<div *ngIf="!loaded" class="py-5 d-flex justify-content-center text-primary">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
     </div>
 </div>

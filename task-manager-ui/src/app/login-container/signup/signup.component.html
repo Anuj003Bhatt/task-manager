@@ -1,58 +1,13 @@
-<div *ngIf="isLogin" class="wrapper">
+<div class="wrapper signup">
     <div class="logo">
-        <img [src]="'../../assets/logo.png'" alt="App Logo">
-    </div>
-    <div class="text-center mt-4 name">
-        Task Manager
-    </div>
-    <form class="p-3 mt-3" (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
-        <div class="form-field d-flex align-items-center">
-            <span class="far fa-user"></span>
-            <input
-                type="text"
-                name="userName"
-                id="userName"
-                placeholder="Username"
-                [(ngModel)]="login_userName"
-                #userNameInput="ngModel"
-                required
-            >
-        </div>
-        <div class="form-field d-flex align-items-center">
-            <span class="fas fa-key"></span>
-            <input
-                type="password"
-                name="password"
-                id="pwd"
-                placeholder="Password"
-                [(ngModel)]="login_password"
-                #passwordInput="ngModel"
-                required
-            >
-        </div>
-        <button type="submit" class="btn mt-3">Login</button>
-    </form>
-    <div class="text-center fs-6">
-        <a href="#">Forget password?</a> or <a role="button" (click)="signUpRequest()">Sign up</a>
-    </div>
-    <span
-        class="help-block"
-        style="font-size: small; font-style: italic; color: red;"
-        *ngIf="login_error !== null">
-        {{loginError}}
-    </span>
-</div>
-
-<div *ngIf="!isLogin" class="wrapper">
-    <div class="logo">
-        <img [src]="'../../assets/logo.png'" alt="App Logo">
+        <img [src]="'../../../assets/logo.png'" alt="App Logo">
     </div>
     <div class="text-center mt-4 name">
         Task Manager
     </div>
     <form class="p-3 mt-3" (ngSubmit)="onSubmitSignup()" #signUpForm="ngForm">
         <div class="form-field d-flex align-items-center">
-            <span class="far fa-user"></span>
+            <span class="fa fa-user"></span>
             <input
                 type="text"
                 name="name"
@@ -102,12 +57,12 @@
         <button type="submit" class="btn mt-3">Sign Up</button>
     </form>
     <div class="text-center fs-6">
-        Already have an account <a role="button" (click)="loginRequest()">Login</a>
+        Already have an account? <a class="text-center fs-6" role="button" (click)="goToLogin()">Login</a>
     </div>
     <span
         class="help-block"
         style="font-size: small; font-style: italic; color: red;"
-        *ngIf="loginError !== null">
+        *ngIf="singup_error !== null">
         {{singup_error}}
     </span>
 </div>

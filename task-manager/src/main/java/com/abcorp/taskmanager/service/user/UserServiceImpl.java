@@ -4,12 +4,15 @@ import com.abcorp.taskmanager.exception.BadRequestException;
 import com.abcorp.taskmanager.exception.NotFoundException;
 import com.abcorp.taskmanager.model.entity.User;
 import com.abcorp.taskmanager.model.request.AddUserDto;
+import com.abcorp.taskmanager.model.request.LoginRequestDto;
 import com.abcorp.taskmanager.model.response.ListResponse;
-import com.abcorp.taskmanager.model.response.SignupResponseDto;
+import com.abcorp.taskmanager.model.response.AuthResponseDto;
 import com.abcorp.taskmanager.model.response.UserDto;
 import com.abcorp.taskmanager.repository.UserRepository;
+import com.abcorp.taskmanager.service.crypto.unidirectional.UnidirectionalCryptoService;
 import com.abcorp.taskmanager.type.UserStatus;
 import com.abcorp.taskmanager.util.BridgeUtil;
+import com.abcorp.taskmanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,9 +27,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UnidirectionalCryptoService unidirectionalCryptoService;
+    private final JwtUtil jwtUtil;
 
     @Override
-    public SignupResponseDto add(AddUserDto addUserDto) {
+    public AuthResponseDto add(AddUserDto addUserDto) {
         Optional<User> userOp = userRepository.findByEmailOrPhone(addUserDto.getEmail(), addUserDto.getPhone());
         if(userOp.isPresent()){
             log.error("User with same email ID or phone already exists");
@@ -36,14 +41,15 @@ public class UserServiceImpl implements UserService {
                 .builder()
                 .name(addUserDto.getName())
                 .email(addUserDto.getEmail())
+                .password(addUserDto.getPassword())
                 .phone(addUserDto.getPhone())
                 .status(UserStatus.ACTIVE)
                 .build();
         UserDto userDto = userRepository.save(user).toDto();
-        return SignupResponseDto
+        return AuthResponseDto
                 .builder()
                 .user(userDto)
-                .authToken("test")
+                .authToken(jwtUtil.generateToken(userDto))
                 .build();
     }
 
@@ -131,5 +137,21 @@ public class UserServiceImpl implements UserService {
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public AuthResponseDto login(LoginRequestDto loginRequestDto) {
+        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(
+                () -> new NotFoundException("Email ID '%s' does not exist in the system", loginRequestDto.getEmail())
+        );
+        Boolean verificationStatus = unidirectionalCryptoService.verify(user.getPassword(), loginRequestDto.getPassword());
+        if (verificationStatus) {
+            return AuthResponseDto
+                    .builder()
+                    .user(user.toDto())
+                    .authToken(jwtUtil.generateToken(user.toDto()))
+                    .build();
+        }
+        throw new BadRequestException("Invalid email ID/password");
     }
 }

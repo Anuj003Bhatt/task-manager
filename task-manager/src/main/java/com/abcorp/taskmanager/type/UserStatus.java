@@ -8,6 +8,11 @@ public enum UserStatus {
 
     private final Boolean isActive;
 
+    @JsonValue
+    public boolean getStatus() {
+        return this.isActive;
+    }
+
     UserStatus(Boolean isActive) {
         this.isActive = isActive;
     }
