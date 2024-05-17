@@ -32,6 +32,14 @@ services:
       - appNet
     volumes:
       - pgData:/var/lib/postgresql
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - appNet
 #  app:
 #    container_name: task-manager
 #    build: ./

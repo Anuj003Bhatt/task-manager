@@ -18,7 +18,7 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   viewAsTile: boolean = false;
   statusFilter: number;
   priorityFilter: number;
-  columns: number=4;
+  columns: number = 4;
   tasks: Task[] = [];
   updateSubscription: Subscription;
   addSubscription: Subscription;
@@ -39,24 +39,24 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
       type: "fitGridWidth",
     };
 
-    autoSizeAll() {
-      const allColumnIds: string[] = [];
-      this.gridApi.getColumns()!.forEach((column) => {
-        allColumnIds.push(column.getId());
-      });
-      
-      this.gridApi.setGridOption('domLayout', 'autoHeight');
-      
-      this.gridApi.autoSizeAllColumns(false);
-    }
+  autoSizeAll() {
+    const allColumnIds: string[] = [];
+    this.gridApi.getColumns()!.forEach((column) => {
+      allColumnIds.push(column.getId());
+    });
 
-    onGridReady(params: GridReadyEvent<Task>) {
-      this.gridApi = params.api;
-      this.autoSizeAll();
-    }
+    this.gridApi.setGridOption('domLayout', 'autoHeight');
+
+    this.gridApi.autoSizeAllColumns(false);
+  }
+
+  onGridReady(params: GridReadyEvent<Task>) {
+    this.gridApi = params.api;
+    this.autoSizeAll();
+  }
 
   colDefs: ColDef[] = [
-    { field: "title"},
+    { field: "title" },
     { field: "description" },
     {
       field: "status", cellRenderer: (params) => {
@@ -153,8 +153,8 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
 
     fromEvent(window, 'resize').pipe(
       map(event => (event.target as any).innerWidth),
-      startWith(window.innerWidth)).subscribe(width => { this.columns = this.getCols(width)}
-    );
+      startWith(window.innerWidth)).subscribe(width => { this.columns = this.getCols(width) }
+      );
     this.taskService.fetchTasks(undefined, undefined);
     this.loaded = true;
   }
@@ -194,8 +194,8 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   }
 
   matchTerms(terms: string[], value: string): boolean {
-    for( let term of terms ) {
-      if ( value.toUpperCase().indexOf(term.toUpperCase()) !== -1) {
+    for (let term of terms) {
+      if (value.toUpperCase().indexOf(term.toUpperCase()) !== -1) {
         return true;
       }
     }
@@ -203,11 +203,11 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   }
 
   onSearch() {
-    const terms:string[] = this.searchTerm.split(' ');
+    const terms: string[] = this.searchTerm.split(' ');
     this.loaded = false;
     this.tasks = this.taskService.getTasks().filter(value => {
       return this.matchTerms(terms, value.title)
-      || this.matchTerms(terms, value.description) 
+        || this.matchTerms(terms, value.description)
     })
     this.loaded = true;
   }

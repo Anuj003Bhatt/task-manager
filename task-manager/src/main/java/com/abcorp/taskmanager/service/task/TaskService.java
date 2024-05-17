@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface TaskService {
     ListResponse<TaskDto> listTasksForUser(UUID userId, Pageable pageable);
     TaskDto addTask(UUID userId, AddTaskDto addTaskDto);
-    TaskDto getTaskById(UUID taskId);
+    TaskDto getTaskById(UUID taskId, UUID userId);
     TaskDto updateTask(UUID userId, UUID taskId, TaskDto taskDto);
     Boolean deleteTask(UUID userId, UUID taskId);
     ListResponse<TaskDto> listTasksForUserByStatusAndPriority(UUID userId, Integer status, Integer priority, Pageable pageable);

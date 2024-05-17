@@ -1,15 +1,16 @@
 <nav class="navbar navbar-light bg-dark">
-    <div class="navbar-brand text-white" style="padding-left: 30px;" href="#">
-      <img style="border-radius: 50%;" [src]="'../../assets/logo.png'" width="30" height="30" class="d-inline-block align-top" alt="">
-      <div style="display: inline-block; padding-left: 15px;">Task Manager</div>
-    </div>
+  <div class="navbar-brand text-white" style="padding-left: 30px;" href="#">
+    <img style="border-radius: 50%;" [src]="'../../assets/logo.png'" width="30" height="30"
+      class="d-inline-block align-top" alt="">
+    <div style="display: inline-block; padding-left: 15px;">Task Manager</div>
+  </div>
 
-    <div class="pull-right navbar-brand text-white" style="padding-left: 30px;" href="#">
-      <div style="display: inline-block; padding-right: 15px;">{{user.name}}</div>
-      <div style="display: inline-block; padding-right: 15px;">
-        <div class="circles">
-          {{ getInitials(user.name)}}
-        </div>
-        </div>
+  <div class="pull-right navbar-brand text-white" style="padding-left: 30px;" href="#">
+    <div style="display: inline-block; padding-right: 15px;">{{user.name}}</div>
+    <div style="display: inline-block; padding-right: 15px;">
+      <div class="circles">
+        {{ getInitials(user.name)}}
+      </div>
     </div>
-  </nav>
+  </div>
+</nav>

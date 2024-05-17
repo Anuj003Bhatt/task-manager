@@ -58,9 +58,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto getTaskById(UUID taskId) {
-        return taskRepository.findById(taskId).orElseThrow(
-                () -> new NotFoundException("No task found for ID '%s'", taskId)
+    public TaskDto getTaskById(UUID taskId, UUID userId) {
+        return taskRepository.findByIdAndUserId(taskId, userId).orElseThrow(
+                () -> new NotFoundException("No task found with ID '%s' for user.", taskId)
         ).toDto();
     }
 

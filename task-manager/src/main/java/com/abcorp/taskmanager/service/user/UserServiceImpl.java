@@ -10,6 +10,7 @@ import com.abcorp.taskmanager.model.response.AuthResponseDto;
 import com.abcorp.taskmanager.model.response.UserDto;
 import com.abcorp.taskmanager.repository.UserRepository;
 import com.abcorp.taskmanager.service.crypto.unidirectional.UnidirectionalCryptoService;
+import com.abcorp.taskmanager.service.mail.MailService;
 import com.abcorp.taskmanager.type.UserStatus;
 import com.abcorp.taskmanager.util.BridgeUtil;
 import com.abcorp.taskmanager.util.JwtUtil;
@@ -20,16 +21,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private Map<String, String> OTPs = new HashMap<>();
+    private Map<String, String> verificationIDs = new HashMap<>();
     private final UserRepository userRepository;
     private final UnidirectionalCryptoService unidirectionalCryptoService;
     private final JwtUtil jwtUtil;
+    private final MailService mailService;
 
     @Override
     public AuthResponseDto add(AddUserDto addUserDto) {
@@ -158,5 +166,41 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         throw new BadRequestException("Invalid email ID/password");
+    }
+
+    @Override
+    public Boolean resetPassword(String email) {
+        userRepository.findByEmail(email).orElseThrow(
+                () -> new NotFoundException("No user found with this email.")
+        );
+        String otp= new DecimalFormat("000000").format(new Random().nextInt(999999));
+        this.OTPs.put(email, otp);
+        mailService.sendOtp(email, otp);
+        return true;
+    }
+
+    @Override
+    public UUID verifyOtp(String email, String otp) {
+        if (this.OTPs.containsKey(email) && this.OTPs.get(email).equalsIgnoreCase(otp)){
+            UUID id = UUID.randomUUID();
+            verificationIDs.put(id.toString(), email);
+            return id;
+        }
+        throw new BadRequestException("OTP Verification failed.");
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String email, UUID verificationId, String newPassword) {
+        if (this.verificationIDs.containsKey(verificationId.toString())
+                && this.verificationIDs.get(verificationId.toString()).equalsIgnoreCase(email)) {
+            userRepository.findByEmail(email).orElseThrow(
+                    () -> new NotFoundException("No user found with this email.")
+            );
+            userRepository.updatePassword(email, newPassword);
+            return;
+        }
+        throw new BadRequestException("Invalid Password Change request");
+
     }
 }

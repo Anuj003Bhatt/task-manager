@@ -10,14 +10,14 @@ import { AuthService } from '../../service/auth.service';
 })
 export class LoginComponent {
   @ViewChild('loginForm') form: NgForm;
-  login_userName:string;
+  login_userName: string;
   login_password: string;
-  login_error:string;
+  login_error: string;
 
   constructor(
     private router: Router,
     private authService: AuthService
-  ){}
+  ) { }
 
   onSubmitLogin() {
     this.authService.login(this.login_userName, this.login_password).subscribe({
@@ -30,7 +30,7 @@ export class LoginComponent {
         this.login_error = error.error.error;
       }
     })
-    
+
   }
 
   signUpRequest() {

@@ -12,7 +12,7 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 export class ButtonRendererComponent implements ICellRendererAngularComp {
 
-  params:any;
+  params: any;
   label: string;
 
   agInit(params): void {

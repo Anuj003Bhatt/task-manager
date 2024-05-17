@@ -1,5 +1,6 @@
 package com.abcorp.taskmanager.service.task;
 
+import com.abcorp.taskmanager.config.MailConfig;
 import com.abcorp.taskmanager.exception.BadRequestException;
 import com.abcorp.taskmanager.exception.NotFoundException;
 import com.abcorp.taskmanager.model.entity.Task;
@@ -11,8 +12,10 @@ import com.abcorp.taskmanager.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -31,6 +34,12 @@ public class TaskServiceTest {
 
     @Mock
     TaskRepository taskRepository;
+
+    @MockBean
+    private MailConfig mailConfig;
+
+    @MockBean
+    private JavaMailSender mailSender;
 
     @Test
     public void addTaskNullUserTest(){
@@ -69,20 +78,20 @@ public class TaskServiceTest {
     @Test
     public void getTaskByIdFail(){
         TaskService taskService = new TaskServiceImpl(taskRepository, userRepository);
-        when(taskRepository.findById(any())).thenReturn(Optional.empty());
+        when(taskRepository.findByIdAndUserId(any(), any())).thenReturn(Optional.empty());
         assertThrows(
                 NotFoundException.class,
-                () -> taskService.getTaskById(UUID.randomUUID())
+                () -> taskService.getTaskById(UUID.randomUUID(), UUID.randomUUID())
         );
-        verify(taskRepository, times(1)).findById(any());
+        verify(taskRepository, times(1)).findByIdAndUserId(any(), any());
     }
 
     @Test
     public void getTaskByIdSuccess(){
         TaskService taskService = new TaskServiceImpl(taskRepository, userRepository);
-        when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
-        taskService.getTaskById(UUID.randomUUID());
-        verify(taskRepository, times(1)).findById(any());
+        when(taskRepository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(new Task()));
+        taskService.getTaskById(UUID.randomUUID(), UUID.randomUUID());
+        verify(taskRepository, times(1)).findByIdAndUserId(any(), any());
     }
 
     @Test

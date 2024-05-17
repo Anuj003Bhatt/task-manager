@@ -14,7 +14,7 @@ export class TaskService {
     taskUpdated = new EventEmitter<Task>();
 
     private tasks: Task[];
-    
+
 
     private headers = {
         'content-type': 'application/json',
@@ -24,13 +24,13 @@ export class TaskService {
     constructor(
         private authService: AuthService,
         private httpClient: HttpClient
-    ){}
+    ) { }
 
-    getTasks(): Task[]{
+    getTasks(): Task[] {
         return this.tasks.slice();
     }
 
-    fetchTasks(status:number, priority:number){
+    fetchTasks(status: number, priority: number) {
         let params = '';
         if (status !== undefined) {
             params = `?status=${status}`
@@ -41,11 +41,11 @@ export class TaskService {
                 params = `?priority=${priority}`
             } else {
                 params = params + `&priority=${priority}`
-            }   
+            }
         }
 
         this.headers['Authorization'] = `Bearer ${this.authService.getToken()}`
-        
+
         this.httpClient.get(
             `${environment.server_url}/tasks/page${params}`,
             {
@@ -64,7 +64,7 @@ export class TaskService {
         });
     }
 
-    addTask(task: Task){
+    addTask(task: Task) {
         this.headers['Authorization'] = `Bearer ${this.authService.getToken()}`
         this.httpClient.post<Task>(
             `${environment.server_url}/tasks/add`,
@@ -84,7 +84,7 @@ export class TaskService {
         });
     }
 
-    editTask(task:Task) {
+    editTask(task: Task) {
         this.headers['Authorization'] = `Bearer ${this.authService.getToken()}`
         this.httpClient.put<Task>(
             `${environment.server_url}/tasks/${task.id}`,
@@ -104,19 +104,19 @@ export class TaskService {
         });
     }
 
-    deleteTask(id: string){
+    deleteTask(id: string) {
         this.headers['Authorization'] = `Bearer ${this.authService.getToken()}`
         this.httpClient.delete(
             `${environment.server_url}/tasks/${id}`, {
-                'headers': this.headers
-            }
+            'headers': this.headers
+        }
         ).subscribe({
             next: (response) => {
                 this.taskDeleted.emit();
-             },
-             error: (error) => {
+            },
+            error: (error) => {
                 this.taskDeleted.error(error.error.error);
-             }
+            }
         })
 
     }

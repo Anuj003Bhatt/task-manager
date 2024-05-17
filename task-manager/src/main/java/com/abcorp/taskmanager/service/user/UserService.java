@@ -18,4 +18,8 @@ public interface UserService {
     Boolean enableUser(UUID userId);
     Boolean disableUser(UUID userId);
     AuthResponseDto login(LoginRequestDto loginRequestDto);
+    Boolean resetPassword(String email);
+    UUID verifyOtp(String email, String otp);
+
+    void changePassword(String email, UUID verificationId, String newPassword);
 }

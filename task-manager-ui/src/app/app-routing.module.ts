@@ -10,15 +10,17 @@ import { SignupComponent } from "./login-container/signup/signup.component";
 import { ResetPasswordComponent } from "./login-container/reset-password/reset-password.component";
 
 const appRoutes: Routes = [
-    {path: '', component: LoginContainerComponent, pathMatch:"prefix", children: [
-        {path:'', component: LoginComponent},
-        {path:'login', component: LoginComponent},
-        {path:'signup', component: SignupComponent},
-        {path:'reset', component: ResetPasswordComponent},
-    ]},
-    {path:'dashboard', component: HomeComponent, canActivate: [canActivate]},
-    {path:'newtask', component: NewTaskComponent, canActivate: [canActivate]},
-    {path:'**', component: NotFoundComponent}
+    {
+        path: '', component: LoginContainerComponent, pathMatch: "prefix", children: [
+            { path: '', component: LoginComponent },
+            { path: 'login', component: LoginComponent },
+            { path: 'signup', component: SignupComponent },
+            { path: 'reset', component: ResetPasswordComponent },
+        ]
+    },
+    { path: 'dashboard', component: HomeComponent, canActivate: [canActivate] },
+    { path: 'newtask', component: NewTaskComponent, canActivate: [canActivate] },
+    { path: '**', component: NotFoundComponent }
 ]
 
 @NgModule({
@@ -27,6 +29,6 @@ const appRoutes: Routes = [
         RouterModule
     ]
 })
-export class AppRoutingModule{
+export class AppRoutingModule {
 
 }

@@ -2,7 +2,6 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Task } from '../model/task.model';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TaskService } from '../service/task.service';
-import { HttpClient } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,7 +20,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<EditTaskComponent>,
     private taskService: TaskService,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   openSnackBar(message: string) {
     this.snackBar.open(message, null, {

@@ -13,16 +13,16 @@ import { Subscription } from 'rxjs';
 export class NewTaskComponent implements OnInit, OnDestroy {
   @ViewChild('taskForm') form: NgForm;
   subscription: Subscription;
-  taskTitle:string;
-  taskDescription:string;
-  taskStatus:number;
-  taskPriority:number;
+  taskTitle: string;
+  taskDescription: string;
+  taskStatus: number;
+  taskPriority: number;
 
 
   constructor(
     private dialogRef: MatDialogRef<NewTaskComponent>,
     private taskService: TaskService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscription = this.taskService.taskUpdated.subscribe(
@@ -32,7 +32,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       (error) => {
         console.log(`Error in new task cmp: ${JSON.stringify(error)}`)
       }
-    )    
+    )
   }
 
   ngOnDestroy(): void {

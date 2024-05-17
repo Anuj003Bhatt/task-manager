@@ -1,7 +1,10 @@
 package com.abcorp.taskmanager.controller;
 
 import com.abcorp.taskmanager.model.request.AddUserDto;
+import com.abcorp.taskmanager.model.request.ChangePasswordRequest;
 import com.abcorp.taskmanager.model.request.LoginRequestDto;
+import com.abcorp.taskmanager.model.request.OtpVerificationRequest;
+import com.abcorp.taskmanager.model.request.ResetPasswordRequest;
 import com.abcorp.taskmanager.model.response.ListResponse;
 import com.abcorp.taskmanager.model.response.AuthResponseDto;
 import com.abcorp.taskmanager.model.response.UserDto;
@@ -18,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -53,6 +55,52 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponseDto signup(@RequestBody @Valid AddUserDto addUserDto) {
         return userService.add(addUserDto);
+    }
+
+    @Operation(
+            summary = "Reset Password",
+            description = "Reset Password for a user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reset password OTP sent"),
+            @ApiResponse(responseCode = "400", description = "User with email ID not found")
+    })
+    @PostMapping("/reset_password")
+    public Object resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+        userService.resetPassword(resetPasswordRequest.getEmail());
+        return Map.of("message", "Reset Password OTP has been sent to registered email ID.");
+    }
+
+    @Operation(
+            summary = "OTP Verification",
+            description = "Reset Password OTP verification for a user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Verification successful")
+    })
+    @PostMapping("/otp_verify")
+    public Object otpVerify(@RequestBody @Valid OtpVerificationRequest otpVerificationRequest) {
+        return Map.of(
+                "id",
+                userService.verifyOtp(otpVerificationRequest.getEmail(), otpVerificationRequest.getOtp())
+        );
+    }
+
+    @Operation(
+            summary = "Change Password",
+            description = "Reset Password after OTP verification for a user"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Verification successful")
+    })
+    @PostMapping("/change_password")
+    public Object changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+        userService.changePassword(
+                changePasswordRequest.getEmail(),
+                changePasswordRequest.getVerificationId(),
+                changePasswordRequest.getNewPassword()
+        );
+        return Map.of("message", "Password updated successfully");
     }
 
     @Operation(

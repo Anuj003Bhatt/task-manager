@@ -12,13 +12,13 @@ import { EditTaskComponent } from '../edit-task/edit-task.component';
   styleUrl: './task-item.component.css'
 })
 export class TaskItemComponent {
-  @Input({required: true}) task: Task;
+  @Input({ required: true }) task: Task;
   subscription: Subscription;
 
   constructor(
     private taskService: TaskService,
     private dialog: MatDialog,
-  ) {}
+  ) { }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(EditTaskComponent);

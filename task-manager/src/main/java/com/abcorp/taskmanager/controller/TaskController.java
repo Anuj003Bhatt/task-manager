@@ -8,7 +8,6 @@ import com.abcorp.taskmanager.service.task.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +38,7 @@ import java.util.UUID;
 @Slf4j
 @Tag(name = "Task")
 @CrossOrigin
-//@SecurityRequirement(name = "App Bearer token")
+@RequestMapping("tasks")
 public class TaskController {
     private final TaskService taskService;
 
@@ -50,7 +50,7 @@ public class TaskController {
             @ApiResponse(responseCode = "201", description = "Task created successfully"),
             @ApiResponse(responseCode = "404", description = "No user found for ID")
     })
-    @PostMapping("/tasks/add")
+    @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto addTask(
             Principal principal,
@@ -69,7 +69,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "No user found for ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/tasks/page")
+    @GetMapping("/page")
     public ListResponse<TaskDto> listTasks(
             Principal principal,
             @RequestParam(value = "status", required = false) Integer status,
@@ -97,7 +97,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "No user found for ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })//users/67d12074-8290-462b-a205-509251283bea/tasks/c791a28b-55e7-48d6-a758-18885892d4c0
-    @PutMapping("tasks/{taskId}")
+    @PutMapping("/{taskId}")
     public TaskDto updateTask(
             Principal principal,
             @PathVariable("taskId") UUID taskId,
@@ -120,7 +120,7 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task Deleted successfully")
     })
-    @DeleteMapping("tasks/{taskId}")
+    @DeleteMapping("/{taskId}")
     public Object updateTask(
             Principal principal,
             @PathVariable("taskId") UUID taskId
@@ -137,5 +137,26 @@ public class TaskController {
         } else {
             return Map.of("message", "Unable to delete task");
         }
+    }
+
+    @Operation(
+            summary = "Get Task",
+            description = "Get a task details by its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task Fetched successfully")
+    })
+    @GetMapping("/{taskId}")
+    public TaskDto getTask(
+            Principal principal,
+            @PathVariable("taskId") UUID taskId
+    ) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(principal.getName());
+        } catch (Exception ex){
+            throw new BadRequestException("Unauthenticated access detected");
+        }
+        return taskService.getTaskById(taskId, userId);
     }
 }

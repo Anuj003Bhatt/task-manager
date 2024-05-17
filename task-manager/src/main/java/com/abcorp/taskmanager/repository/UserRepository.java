@@ -19,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Query("Update User u set u.status = :status where u.id = :id")
     void updateStatus(@Param(value = "id") UUID id, @Param(value = "status") UserStatus status);
+
+    @Modifying
+    @Query("Update User u set u.password = :password where u.email = :email")
+    void updatePassword(@Param(value = "email") String email, @Param(value = "password") String password);
 }

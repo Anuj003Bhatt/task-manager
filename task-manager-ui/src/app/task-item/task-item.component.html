@@ -1,7 +1,7 @@
 <mat-card style="min-width: 250px;" fxFlexFill fxLayoutAlign="center center" class="item-bg bg-dark text-white">
   <mat-card-header>
     <mat-card-title>{{task.title}}</mat-card-title>
-    <mat-card-subtitle class="mb-3" >
+    <mat-card-subtitle class="mb-3">
       <span [ngSwitch]="task.status">
         <span *ngSwitchCase="0" class="badge bg-info text-dark">To Do</span>
         <span *ngSwitchCase="1" class="badge bg-primary">In Progress</span>
@@ -18,7 +18,7 @@
       </span>
     </mat-card-subtitle>
   </mat-card-header>
-  
+
   <mat-card-content>
     <p>{{task.description}}</p>
   </mat-card-content>
@@ -26,12 +26,13 @@
   <mat-card-footer style="margin-top: 30px; padding-bottom: 20px;">
     <mat-card-actions>
       <button (click)="editTask()" class="btn btn-primary" mat-button><i class="fa fa-edit"></i></button>
-      <button (click)="deleteTask()" style="margin-left: 15px;" class="btn btn-danger" mat-button><i class="fa fa-trash-o fa-lg"></i></button>
+      <button (click)="deleteTask()" style="margin-left: 15px;" class="btn btn-danger" mat-button><i
+          class="fa fa-trash-o fa-lg"></i></button>
     </mat-card-actions>
   </mat-card-footer>
 </mat-card>
 <mat-card style="min-width: 250px;" fxFlexFill fxLayoutAlign="center center" class="item-bg bg-dark text-white">
-<!-- <div class="card" style="width: 18rem;">
+  <!-- <div class="card" style="width: 18rem;">
   <div class="card-body">
     <h5 class="card-title">Card title</h5>
     <h6 class="card-subtitle mb-2 text-muted"><span class="label success">Success</span> <span class="label warning">Success</span></h6>

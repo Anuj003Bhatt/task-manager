@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { environment } from "../environment";
 import { User } from "../model/user.model";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
     private loggedInUser: User;
     private authToken: string;
@@ -14,11 +14,11 @@ export class AuthService {
 
     constructor(
         private httpClient: HttpClient
-    ) {}
+    ) { }
 
     login(email: string, password: string) {
         return this.httpClient.post<User>(
-            environment.server_url+'/users/login',
+            environment.server_url + '/users/login',
             {
                 'email': email,
                 'password': password
@@ -31,7 +31,7 @@ export class AuthService {
 
     signUp(name: string, email: string, phone: string, password: string) {
         return this.httpClient.post<User>(
-            environment.server_url+'/users/add',
+            environment.server_url + '/users/add',
             {
                 'name': name,
                 'email': email,
@@ -44,10 +44,49 @@ export class AuthService {
         );
     }
 
+    reset(email: string) {
+        return this.httpClient.post(
+            environment.server_url + '/users/reset_password',
+            {
+                'email': email
+            },
+            {
+                'headers': this.headers
+            }
+        );
+    }
+
+    verify(email: string, otp:string) {
+        return this.httpClient.post(
+            environment.server_url + '/users/otp_verify',
+            {
+                'email': email,
+                'otp': otp
+            },
+            {
+                'headers': this.headers
+            }
+        );
+    }
+
+    changePassword(email: string, verificationId: string, newPassword: string) {
+        return this.httpClient.post<User>(
+            environment.server_url + '/users/change_password',
+            {
+                'email': email,
+                'verificationId': verificationId,
+                'newPassword': newPassword
+            },
+            {
+                'headers': this.headers
+            }
+        );
+    }
+
     setToken(token: string) {
         this.authToken = token;
     }
-    
+
     getToken() {
         return this.authToken;
     }
