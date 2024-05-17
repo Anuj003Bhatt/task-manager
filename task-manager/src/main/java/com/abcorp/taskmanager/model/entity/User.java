@@ -2,6 +2,7 @@ package com.abcorp.taskmanager.model.entity;
 
 import com.abcorp.taskmanager.converter.OneWayCryptoConverter;
 import com.abcorp.taskmanager.converter.TwoWayCryptoConverter;
+import com.abcorp.taskmanager.converter.UserStatusConverter;
 import com.abcorp.taskmanager.model.base.DtoBridge;
 import com.abcorp.taskmanager.model.response.UserDto;
 import com.abcorp.taskmanager.type.UserStatus;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_ent")
+@Table(name = "users")
 @Builder
 @Getter
 @Setter
@@ -53,7 +54,8 @@ public class User extends BaseAuditable implements DtoBridge<UserDto> {
     private String phone;
 
     @Column(name = "status")
-    private UserStatus status;
+    @Convert(converter = UserStatusConverter.class)
+    private UserStatus status = UserStatus.ACTIVE;
 
     @OneToMany(mappedBy = "user")
     private List<Task> tasks;

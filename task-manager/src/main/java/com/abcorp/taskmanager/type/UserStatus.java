@@ -5,18 +5,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum UserStatus {
     ACTIVE(true), INACTIVE(false);
-
     private final Boolean isActive;
-
-    @JsonValue
-    public boolean getStatus() {
-        return this.isActive;
-    }
 
     UserStatus(Boolean isActive) {
         this.isActive = isActive;
     }
 
+    @JsonValue
     public Boolean getIsActive() {
         return isActive;
     }

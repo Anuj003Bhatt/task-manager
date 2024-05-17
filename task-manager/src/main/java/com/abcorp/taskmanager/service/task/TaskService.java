@@ -12,5 +12,6 @@ public interface TaskService {
     TaskDto addTask(UUID userId, AddTaskDto addTaskDto);
     TaskDto getTaskById(UUID taskId);
     TaskDto updateTask(UUID userId, UUID taskId, TaskDto taskDto);
-    Boolean deleteTask(UUID taskId);
+    Boolean deleteTask(UUID userId, UUID taskId);
+    ListResponse<TaskDto> listTasksForUserByStatusAndPriority(UUID userId, Integer status, Integer priority, Pageable pageable);
 }

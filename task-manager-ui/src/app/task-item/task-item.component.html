@@ -3,17 +3,17 @@
     <mat-card-title>{{task.title}}</mat-card-title>
     <mat-card-subtitle class="mb-3" >
       <span [ngSwitch]="task.status">
-        <span *ngSwitchCase="0" class="badge bg-info">To Do</span>
+        <span *ngSwitchCase="0" class="badge bg-info text-dark">To Do</span>
         <span *ngSwitchCase="1" class="badge bg-primary">In Progress</span>
         <span *ngSwitchCase="2" class="badge bg-success">Complete</span>
         <span *ngSwitchDefault class="badge bg-danger">Invalid Status</span>
       </span>
       <span style="margin-left: 10px;" [ngSwitch]="task.priority">
-        <span *ngSwitchCase="0" class="badge bg-warning">Low</span>
-        <span *ngSwitchCase="1" class="badge bg-primary">Medium</span>
-        <span *ngSwitchCase="2" class="badge bg-success">High</span>
-        <span *ngSwitchCase="3" class="badge bg-success">Critical</span>
-        <span *ngSwitchCase="4" class="badge bg-success">Blocker</span>
+        <span *ngSwitchCase="0" class="badge bg-info text-dark">Low</span>
+        <span *ngSwitchCase="1" class="badge bg-light text-dark">Medium</span>
+        <span *ngSwitchCase="2" class="badge bg-primary">High</span>
+        <span *ngSwitchCase="3" class="badge bg-warning text-dark">Critical</span>
+        <span *ngSwitchCase="4" class="badge bg-danger">Blocker</span>
         <span *ngSwitchDefault class="badge bg-danger">Invalid Priority</span>
       </span>
     </mat-card-subtitle>

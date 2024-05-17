@@ -22,7 +22,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
 
 @Entity
-@Table(name = "task")
+@Table(name = "tasks")
 @Builder
 @Getter
 @Setter

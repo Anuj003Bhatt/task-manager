@@ -13,6 +13,7 @@ import com.abcorp.taskmanager.service.crypto.unidirectional.UnidirectionalCrypto
 import com.abcorp.taskmanager.type.UserStatus;
 import com.abcorp.taskmanager.util.BridgeUtil;
 import com.abcorp.taskmanager.util.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -90,6 +91,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Boolean deleteUser(UUID userId) {
         if (userId == null) {
             log.error("user ID passed in for update was blank");
@@ -106,6 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Boolean enableUser(UUID userId) {
         if (userId == null) {
             log.error("user ID passed in for update was blank");
@@ -117,12 +120,12 @@ public class UserServiceImpl implements UserService {
                     return new NotFoundException("No user found for ID %s", userId);
                 }
         );
-        user.setStatus(UserStatus.ACTIVE);
-        userRepository.save(user);
+        userRepository.updateStatus(user.getId(), UserStatus.ACTIVE);
         return true;
     }
 
     @Override
+    @Transactional
     public Boolean disableUser(UUID userId) {
         if (userId == null) {
             log.error("user ID passed in for update was blank");
@@ -134,8 +137,7 @@ public class UserServiceImpl implements UserService {
                     return new NotFoundException("No user found for ID %s", userId);
                 }
         );
-        user.setStatus(UserStatus.INACTIVE);
-        userRepository.save(user);
+        userRepository.updateStatus(user.getId(), UserStatus.INACTIVE);
         return true;
     }
 
@@ -144,6 +146,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(
                 () -> new NotFoundException("Email ID '%s' does not exist in the system", loginRequestDto.getEmail())
         );
+        if (!user.getStatus().getIsActive()) {
+            throw new BadRequestException("User has been disabled");
+        }
         Boolean verificationStatus = unidirectionalCryptoService.verify(user.getPassword(), loginRequestDto.getPassword());
         if (verificationStatus) {
             return AuthResponseDto

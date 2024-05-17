@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum TaskStatus {
     TODO((short)0), INPROGRESS((short)1), DONE((short)2);
 
-    private short status;
+    private final short status;
 
     @JsonValue
     public short getStatus() {

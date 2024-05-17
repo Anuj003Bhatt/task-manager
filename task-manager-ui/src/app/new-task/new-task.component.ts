@@ -25,7 +25,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.taskService.taskAdded.subscribe(
+    this.subscription = this.taskService.taskUpdated.subscribe(
       (task) => {
         this.closeDialog();
       },

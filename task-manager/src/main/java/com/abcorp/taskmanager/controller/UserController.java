@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -45,7 +46,8 @@ public class UserController {
             description = "Create a new user for the platform"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User added successfully")
+            @ApiResponse(responseCode = "201", description = "User added successfully"),
+            @ApiResponse(responseCode = "400", description = "User with same email ID or phone already exists")
     })
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
@@ -74,7 +76,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "List of users in response"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/list")
+    @GetMapping("/page")
     public ListResponse<UserDto> listUsers(
             @PageableDefault(size = 20)
             @SortDefault.SortDefaults({

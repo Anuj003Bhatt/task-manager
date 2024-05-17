@@ -8,6 +8,7 @@ import com.abcorp.taskmanager.service.task.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,6 +38,7 @@ import java.util.UUID;
 @Slf4j
 @Tag(name = "Task")
 @CrossOrigin
+//@SecurityRequirement(name = "App Bearer token")
 public class TaskController {
     private final TaskService taskService;
 
@@ -46,12 +50,13 @@ public class TaskController {
             @ApiResponse(responseCode = "201", description = "Task created successfully"),
             @ApiResponse(responseCode = "404", description = "No user found for ID")
     })
-    @PostMapping("users/{userId}/tasks/add")
+    @PostMapping("/tasks/add")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto addTask(
-            @PathVariable("userId") UUID userId,
+            Principal principal,
             @RequestBody @Valid AddTaskDto addTaskDto
     ) {
+        UUID userId = UUID.fromString(principal.getName());
         return taskService.addTask(userId, addTaskDto);
     }
 
@@ -64,15 +69,23 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "No user found for ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("users/{userId}/tasks/list")
+    @GetMapping("/tasks/page")
     public ListResponse<TaskDto> listTasks(
-            @PathVariable("userId") UUID userId,
+            Principal principal,
+            @RequestParam(value = "status", required = false) Integer status,
+            @RequestParam(value = "priority", required = false) Integer priority,
             @PageableDefault(size = 20)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "id", direction = Sort.Direction.ASC)
             }) Pageable pageable
     ) {
-        return taskService.listTasksForUser(userId, pageable);
+        UUID userId;
+        try {
+            userId = UUID.fromString(principal.getName());
+        } catch (Exception ex){
+            throw new BadRequestException("Unauthenticated access detected");
+        }
+        return taskService.listTasksForUserByStatusAndPriority(userId, status, priority, pageable);
     }
 
     @Operation(
@@ -84,12 +97,19 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "No user found for ID"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })//users/67d12074-8290-462b-a205-509251283bea/tasks/c791a28b-55e7-48d6-a758-18885892d4c0
-    @PutMapping("users/{userId}/tasks/{taskId}")
+    @PutMapping("tasks/{taskId}")
     public TaskDto updateTask(
-            @PathVariable("userId") UUID userId,
+            Principal principal,
             @PathVariable("taskId") UUID taskId,
             @RequestBody @Valid TaskDto task
     ) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(principal.getName());
+        } catch (Exception ex){
+            throw new BadRequestException("Unauthenticated access detected");
+        }
+
         return taskService.updateTask(userId, taskId, task);
     }
 
@@ -102,9 +122,16 @@ public class TaskController {
     })
     @DeleteMapping("tasks/{taskId}")
     public Object updateTask(
+            Principal principal,
             @PathVariable("taskId") UUID taskId
     ) {
-        Boolean response = taskService.deleteTask(taskId);
+        UUID userId;
+        try {
+            userId = UUID.fromString(principal.getName());
+        } catch (Exception ex){
+            throw new BadRequestException("Unauthenticated access detected");
+        }
+        Boolean response = taskService.deleteTask(userId, taskId);
         if (response) {
             return Map.of("message", "Task has been deleted successfully");
         } else {

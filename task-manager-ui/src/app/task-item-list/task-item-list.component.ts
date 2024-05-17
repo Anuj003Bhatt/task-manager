@@ -16,46 +16,52 @@ import { EditTaskComponent } from '../edit-task/edit-task.component';
 })
 export class TaskItemListComponent implements OnInit, OnDestroy {
   viewAsTile: boolean = false;
+  statusFilter: number;
+  priorityFilter: number;
   columns: number=4;
   tasks: Task[] = [];
   updateSubscription: Subscription;
+  addSubscription: Subscription;
   deleteSubscription: Subscription;
   loaded = false;
   error: string;
+  searchTerm: string;
   private gridApi!: GridApi<Task>;
 
-  switchView() {
-    this.viewAsTile = !this.viewAsTile;
+  switchView(viewAs: boolean) {
+    this.viewAsTile = viewAs;
   }
 
   public autoSizeStrategy:
     | SizeColumnsToFitGridStrategy
     | SizeColumnsToFitProvidedWidthStrategy
     | SizeColumnsToContentStrategy = {
-      type: "fitCellContents",
+      type: "fitGridWidth",
     };
 
-    autoSizeAll(skipHeader: boolean) {
+    autoSizeAll() {
       const allColumnIds: string[] = [];
       this.gridApi.getColumns()!.forEach((column) => {
         allColumnIds.push(column.getId());
       });
-      this.gridApi.setDomLayout('autoHeight');
-      this.gridApi.autoSizeColumns(allColumnIds, skipHeader);
+      
+      this.gridApi.setGridOption('domLayout', 'autoHeight');
+      
+      this.gridApi.autoSizeAllColumns(false);
     }
 
     onGridReady(params: GridReadyEvent<Task>) {
       this.gridApi = params.api;
-      this.autoSizeAll(false);
+      this.autoSizeAll();
     }
 
   colDefs: ColDef[] = [
-    { field: "title", suppressSizeToFit: true },
+    { field: "title"},
     { field: "description" },
     {
       field: "status", cellRenderer: (params) => {
         switch (params.data.status) {
-          case 0: return '<span class="badge bg-info">To Do</span>';
+          case 0: return '<span class="badge bg-info text-dark">To Do</span>';
           case 1: return '<span class="badge bg-primary">In Progress</span>';
           case 2: return '<span class="badge bg-success">Complete</span>';
           default: return '<span class="badge bg-danger">Invalid Status</span>';
@@ -64,12 +70,12 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
     },
     {
       field: "priority", cellRenderer: (params) => {
-        switch (params.data.status) {
-          case 0: return 'Low';
-          case 1: return 'Medium';
-          case 2: return 'High';
-          case 3: return 'Critical';
-          case 4: return 'Blocker';
+        switch (params.data.priority) {
+          case 0: return '<span class="badge bg-info text-dark">Low</span>';
+          case 1: return '<span class="badge bg-light text-dark">Medium</span>';
+          case 2: return '<span class="badge bg-primary">High</span>';
+          case 3: return '<span class="badge bg-warning text dark">Critical</span>';
+          case 4: return '<span class="badge bg-danger">Blocker</span>';
           default: return 'Invalid Status';
 
         }
@@ -125,6 +131,7 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     this.updateSubscription = this.taskService.taskModified.subscribe(() => {
       this.error = null;
       this.tasks = this.taskService.getTasks()
@@ -137,7 +144,9 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
     this.deleteSubscription = this.taskService.taskDeleted.subscribe(
       () => {
         this.openSnackBar('Task Deleted Successfully');
-        this.tasks = this.taskService.getTasks();
+        this.filterByPriority = undefined;
+        this.filterByStatus = undefined;
+        this.taskService.fetchTasks(undefined, undefined);
       },
       (error) => { this.openSnackBar(JSON.stringify(error)) }
     )
@@ -146,7 +155,7 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
       map(event => (event.target as any).innerWidth),
       startWith(window.innerWidth)).subscribe(width => { this.columns = this.getCols(width)}
     );
-    this.taskService.fetchTasks();
+    this.taskService.fetchTasks(undefined, undefined);
     this.loaded = true;
   }
 
@@ -166,6 +175,8 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.updateSubscription.unsubscribe();
+    this.deleteSubscription.unsubscribe();
+    this.addSubscription.unsubscribe();
   }
 
   openDialog(): void {
@@ -179,7 +190,35 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   }
 
   newTaskNavigate() {
-    // this.router.navigate(['/newtask'])
     this.openDialog()
+  }
+
+  matchTerms(terms: string[], value: string): boolean {
+    for( let term of terms ) {
+      if ( value.toUpperCase().indexOf(term.toUpperCase()) !== -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  onSearch() {
+    const terms:string[] = this.searchTerm.split(' ');
+    this.loaded = false;
+    this.tasks = this.taskService.getTasks().filter(value => {
+      return this.matchTerms(terms, value.title)
+      || this.matchTerms(terms, value.description) 
+    })
+    this.loaded = true;
+  }
+
+  filterByStatus(status: number) {
+    this.statusFilter = status;
+    this.taskService.fetchTasks(this.statusFilter, this.priorityFilter);
+  }
+
+  filterByPriority(priority: number) {
+    this.priorityFilter = priority;
+    this.taskService.fetchTasks(this.statusFilter, this.priorityFilter);
   }
 }

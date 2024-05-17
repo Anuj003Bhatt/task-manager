@@ -32,15 +32,15 @@ services:
       - appNet
     volumes:
       - pgData:/var/lib/postgresql
-  app:
-    container_name: task-manager
-    build: ./
-    ports:
-      - "8080:8080"
-    networks:
-      - appNet
-    depends_on:
-      - postgres_database
+#  app:
+#    container_name: task-manager
+#    build: ./
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - appNet
+#    depends_on:
+#      - postgres_database
 networks:
   appNet:
 volumes:

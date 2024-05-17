@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @Slf4j
 public class SecurityConfig {
 
@@ -38,7 +40,17 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
-                                .requestMatchers("/users/add", "/users/login").permitAll()
+                                .requestMatchers(
+                                        "/users/add",
+                                        "/users/login",
+                                        "/swagger-ui/**",
+                                        "/v2/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/configuration/ui",
+                                        "/swagger-resources/**",
+                                        "/configuration/security",
+                                        "/swagger-ui.html",
+                                        "/webjars/**").permitAll()
                                 .anyRequest().authenticated()
                 ).build();
     }

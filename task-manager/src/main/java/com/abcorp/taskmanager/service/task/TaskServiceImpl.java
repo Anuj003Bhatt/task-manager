@@ -9,6 +9,9 @@ import com.abcorp.taskmanager.model.response.ListResponse;
 import com.abcorp.taskmanager.model.response.TaskDto;
 import com.abcorp.taskmanager.repository.TaskRepository;
 import com.abcorp.taskmanager.repository.UserRepository;
+import com.abcorp.taskmanager.type.TaskPriority;
+import com.abcorp.taskmanager.type.TaskStatus;
+import com.abcorp.taskmanager.type.UserStatus;
 import com.abcorp.taskmanager.util.BridgeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,8 +80,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Boolean deleteTask(UUID taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(
+    public Boolean deleteTask(UUID userId, UUID taskId) {
+        Task task = taskRepository.findByIdAndUserId(taskId, userId).orElseThrow(
                 () -> {
                     log.error("No task found for ID {}", taskId);
                     return new NotFoundException("No task found for ID {}", taskId);
@@ -86,5 +89,47 @@ public class TaskServiceImpl implements TaskService {
         );
         taskRepository.delete(task);
         return true;
+    }
+
+    @Override
+    public ListResponse<TaskDto> listTasksForUserByStatusAndPriority(UUID userId, Integer status, Integer priority, Pageable pageable) {
+        TaskStatus taskStatus = null;
+        if ( status != null && status != -1) {
+            taskStatus = switch (status) {
+                case 0 -> TaskStatus.TODO;
+                case 1 -> TaskStatus.INPROGRESS;
+                case 2 -> TaskStatus.DONE;
+                default -> throw new BadRequestException("Invalid task status");
+            };
+        }
+
+        TaskPriority taskPriority = null;
+        if ( priority != null && priority != -1) {
+            taskPriority = switch (priority) {
+                case 0 -> TaskPriority.LOW;
+                case 1 -> TaskPriority.MEDIUM;
+                case 2 -> TaskPriority.HIGH;
+                case 3 -> TaskPriority.CRITICAL;
+                case 4 -> TaskPriority.BLOCKER;
+                default -> throw new BadRequestException("Invalid task priority");
+            };
+        }
+
+        if (taskStatus == null && taskPriority == null) {
+            return listTasksForUser(userId, pageable);
+        }
+
+        if (taskStatus != null && taskPriority != null) {
+            Page<Task> page = taskRepository.findAllByUserIdAndStatusAndPriority(userId, taskStatus, taskPriority, pageable);
+            return BridgeUtil.buildPaginatedResponse(page);
+        }
+
+        if (taskStatus != null) {
+            Page<Task> page = taskRepository.findAllByUserIdAndStatus(userId, taskStatus, pageable);
+            return BridgeUtil.buildPaginatedResponse(page);
+        }
+
+        Page<Task> page = taskRepository.findAllByUserIdAndPriority(userId, taskPriority, pageable);
+        return BridgeUtil.buildPaginatedResponse(page);
     }
 }

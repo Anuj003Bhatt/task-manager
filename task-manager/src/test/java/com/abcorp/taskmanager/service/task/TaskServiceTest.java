@@ -120,21 +120,21 @@ public class TaskServiceTest {
     @Test
     public void deleteTaskFail(){
         TaskService taskService = new TaskServiceImpl(taskRepository, userRepository);
-        when(taskRepository.findById(any())).thenReturn(Optional.empty());
+        when(taskRepository.findByIdAndUserId(any(), any())).thenReturn(Optional.empty());
         assertThrows(
                 NotFoundException.class,
-                () -> taskService.deleteTask(UUID.randomUUID())
+                () -> taskService.deleteTask(UUID.randomUUID(), UUID.randomUUID())
         );
-        verify(taskRepository, times(1)).findById(any());
+        verify(taskRepository, times(1)).findByIdAndUserId(any(), any());
         verify(taskRepository, times(0)).delete(any());
     }
 
     @Test
     public void deleteTaskSuccess(){
         TaskService taskService = new TaskServiceImpl(taskRepository, userRepository);
-        when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
-        taskService.deleteTask(UUID.randomUUID());
-        verify(taskRepository, times(1)).findById(any());
+        when(taskRepository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(new Task()));
+        taskService.deleteTask(UUID.randomUUID(), UUID.randomUUID());
+        verify(taskRepository, times(1)).findByIdAndUserId(any(), any());
         verify(taskRepository, times(1)).delete(any());
     }
 }
