@@ -57,3 +57,10 @@ To contribute to the project, please review the respective project ReadMe.
 - [Task Manager UI](./task-manager-ui/README.md)
 - [Task Manager Server](./task-manager/README.md)
 
+## Assumptions
+- There are user endpoints like enable/disable/edit/list user which may require an admin privilege but that is not take into account for this demo app. As of now it only shows that endpoints require `some` sort of authorization to use these endpoints.
+- Since this is a demo app, no pagination has been implemented on the UI. Although it is present in the backend.
+- The text search is only UI side search, because making that a server side search opens the code for injections and security risks. So in order to keep this app simple as of now the search is only a UI side search.
+- No real integrations have been coded for the SMTP servers, so it is better to use docker mailhog server only. [Although same can be done with minimal code changes]
+- No real email ID is required only the patterns are validated
+- Strong password verification are not required to keep it simple as of now.
