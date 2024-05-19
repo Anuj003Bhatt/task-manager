@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { environment } from "../environment";
 import { User } from "../model/user.model";
 
@@ -7,6 +7,8 @@ import { User } from "../model/user.model";
 export class AuthService {
     private loggedInUser: User;
     private authToken: string;
+    public logoutEvent = new EventEmitter<void>();
+
     private headers = {
         'content-type': 'application/json',
         'Access-Control-Allow-Origin': 'http://localhost:4200'
@@ -101,5 +103,10 @@ export class AuthService {
 
     isUserPresent(): boolean {
         return this.loggedInUser != null;
+    }
+
+    logout() {
+        this.loggedInUser = null;
+        this.logoutEvent.emit();
     }
 }

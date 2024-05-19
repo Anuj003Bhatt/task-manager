@@ -6,11 +6,17 @@
   </div>
 
   <div class="pull-right navbar-brand text-white" style="padding-left: 30px;" href="#">
-    <div style="display: inline-block; padding-right: 15px;">{{user.name}}</div>
-    <div style="display: inline-block; padding-right: 15px;">
-      <div class="circles">
-        {{ getInitials(user.name)}}
+    <div class="dropdown ml-1 d-flex hoverDiv">
+      <div data-bs-toggle="dropdown">
+        <div style="display: inline-block; padding-right: 15px;">{{user.name}}</div>
+        <div class="circles" style="display: inline-block; padding-right: 15px;">
+          {{ getInitials(user.name)}}
+        </div>
       </div>
-    </div>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" role="button" (click)="logout()">Sign Out</a>
+      </div>
+    </div>    
   </div>
 </nav>
+

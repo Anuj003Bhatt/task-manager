@@ -21,7 +21,6 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   columns: number = 4;
   tasks: Task[] = [];
   updateSubscription: Subscription;
-  addSubscription: Subscription;
   deleteSubscription: Subscription;
   loaded = false;
   error: string;
@@ -176,7 +175,6 @@ export class TaskItemListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.updateSubscription.unsubscribe();
     this.deleteSubscription.unsubscribe();
-    this.addSubscription.unsubscribe();
   }
 
   openDialog(): void {
