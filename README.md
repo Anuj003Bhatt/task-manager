@@ -5,7 +5,7 @@
 The Task Manager App is a versatile and user-friendly tool designed to help users efficiently manage their tasks and stay organized. With this app, users can easily add, track, update, and delete tasks, ensuring they stay on top of their to-do lists. The app also allows users to track the status and priority of each task, providing a comprehensive view of their workload and helping them prioritize effectively.
 
 ## Demo
-[![Task Manager - Demo](sample/logo.png)](https://drive.google.com/file/d/1EAu_w0zOA-vxBySYy_HwkI0cSuxh0BqN/view?usp=sharing "Task Manager - Demo")  
+[Task Manager - Demo](https://drive.google.com/file/d/1EAu_w0zOA-vxBySYy_HwkI0cSuxh0BqN/view?usp=sharing "Task Manager - Demo")  
 
 ## Key Features
 
