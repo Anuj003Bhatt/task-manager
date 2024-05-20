@@ -5,8 +5,10 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 @Component({
   selector: 'app-button-renderer',
   template: `
-    <button (click)="onEdit($event)" class="btn btn-primary" mat-button><i class="fa fa-edit"></i></button>
-    <button (click)="onDelete($event)" style="margin-left: 15px;" class="btn btn-danger" mat-button><i class="fa fa-trash-o fa-lg"></i></button>
+  <div class="m-1 responsive-grid">
+    <button (click)="onEdit($event)" class="small btn btn-primary"><i class="fa fa-edit"></i></button>
+    <button (click)="onDelete($event)" class="small ml-1 btn btn-danger"><i class="fa fa-trash-o fa-lg"></i></button>
+  </div>
     `
 })
 

@@ -19,9 +19,13 @@ import { LoginContainerComponent } from './login-container/login-container.compo
 import { ResetPasswordComponent } from './login-container/reset-password/reset-password.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatButtonModule } from "@angular/material/button";
 import { AgGridModule } from 'ag-grid-angular';
 import { ButtonRendererComponent } from './button-renderer/button-renderer.component';
 import { EditTaskComponent } from './edit-task/edit-task.component';
+import { CommonModule } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -44,10 +48,14 @@ import { EditTaskComponent } from './edit-task/edit-task.component';
     FormsModule,
     HttpClientModule,
     MatGridListModule,
+    CommonModule,
     MatCardModule,
+    MatToolbarModule,
+    MatButtonModule,
     AppRoutingModule,
     MatDialogModule,
-    AgGridModule
+    AgGridModule,
+    MatMenuModule
   ],
   providers: [
     provideAnimationsAsync()

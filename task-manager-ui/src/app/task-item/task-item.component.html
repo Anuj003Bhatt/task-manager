@@ -1,4 +1,4 @@
-<mat-card style="min-width: 250px;" fxFlexFill fxLayoutAlign="center center" class="item-bg bg-dark text-white">
+<!-- <mat-card style="min-width: 250px;" fxFlexFill fxLayoutAlign="center center" class="item-bg bg-dark text-white">
   <mat-card-header>
     <mat-card-title>{{task.title}}</mat-card-title>
     <mat-card-subtitle class="mb-3">
@@ -30,8 +30,7 @@
           class="fa fa-trash-o fa-lg"></i></button>
     </mat-card-actions>
   </mat-card-footer>
-</mat-card>
-<mat-card style="min-width: 250px;" fxFlexFill fxLayoutAlign="center center" class="item-bg bg-dark text-white">
+</mat-card> -->
   <!-- <div class="card" style="width: 18rem;">
   <div class="card-body">
     <h5 class="card-title">Card title</h5>
@@ -41,3 +40,37 @@
     <button (click)="deleteTask()" style="margin-left: 15px;" class="btn btn-danger" mat-button><i class="fa fa-trash-o fa-lg"></i></button>
   </div>
 </div> -->
+
+<mat-card fxFlexFill fxLayoutAlign="center center" class="item-bg bg-dark text-white">
+  <mat-card-header>
+    <mat-card-title>{{task.title}}</mat-card-title>
+    <mat-card-subtitle>
+      <span class="ml-1" [ngSwitch]="task.status">
+        <span *ngSwitchCase="0" class="badge bg-info text-dark">To Do</span>
+        <span *ngSwitchCase="1" class="badge bg-primary">In Progress</span>
+        <span *ngSwitchCase="2" class="badge bg-success">Complete</span>
+        <span *ngSwitchDefault class="badge bg-danger">Invalid Status</span>
+      </span>
+      <span class="ml-1" [ngSwitch]="task.priority">
+        <span *ngSwitchCase="0" class="badge bg-info text-dark">Low</span>
+        <span *ngSwitchCase="1" class="badge bg-light text-dark">Medium</span>
+        <span *ngSwitchCase="2" class="badge bg-primary">High</span>
+        <span *ngSwitchCase="3" class="badge bg-warning text-dark">Critical</span>
+        <span *ngSwitchCase="4" class="badge bg-danger">Blocker</span>
+        <span *ngSwitchDefault class="badge bg-danger">Invalid Priority</span>
+      </span>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <br/>
+    <p>{{task.description}}</p>
+    <br/>
+  </mat-card-content>
+  
+  <mat-card-actions class="m-1 responsive-grid">
+    <button (click)="editTask()" class="btn btn-primary"><i class="fa fa-edit"></i></button>
+    <button (click)="deleteTask()" class="btn btn-danger"><i
+        class="fa fa-trash-o fa-lg"></i></button>
+  </mat-card-actions>
+</mat-card>

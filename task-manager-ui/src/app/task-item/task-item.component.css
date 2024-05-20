@@ -4,6 +4,12 @@
   border-radius: 10%;
 }
 
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 24px;
+}
+
 .success {
   background-color: #04AA6D;
 }

@@ -1,105 +1,58 @@
-<div *ngIf="loaded" class="container py-5">
-
-    <div class="row">
-        <div class="input-group">
-
-            <input [(ngModel)]="searchTerm" type="search" class="form-control rounded" placeholder="Search"
-                aria-label="Search" aria-describedby="search-addon" />
-            <button (click)="onSearch()" type="button" class="btn btn-outline-primary"
-                data-mdb-ripple-init>search</button>
-            <div class="dropdown ml-1">
-                <button class="btn btn-primary" (click)="newTaskNavigate()">Add Task</button>
-            </div>
-        </div>
-        <div class="input-group mt-2">
-            <div class="dropdown ml-1">
-                <button data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"
-                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    View As
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" role="button" (click)="switchView(true)">Thumbnails</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="switchView(false)">List</a>
-                </div>
-            </div>
-            <div class="dropdown ml-1">
-                <button data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"
-                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Filter By Status
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" role="button" (click)="filterByStatus(-1)">All</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByStatus(0)">Todo</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByStatus(1)">In Progress</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByStatus(2)">Complete</a>
-                </div>
-            </div>
-            <div class="dropdown ml-1">
-                <button data-bs-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button"
-                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Filter By Priority
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" role="button" (click)="filterByPriority(-1)">All</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByPriority(0)">Low</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByPriority(1)">Medium</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByPriority(2)">High</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByPriority(3)">Critical</a>
-                    <li>
-                        <hr class="dropdown-divider" />
-                    </li>
-                    <a class="dropdown-item" role="button" (click)="filterByPriority(4)">Blocker</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="py-5" *ngIf="tasks !== undefined && tasks.length > 0; else noTasks">
-        <mat-grid-list class="m-2 p-2" *ngIf="viewAsTile" [cols]="columns" rowHeight="1:1" gutterSize="10px">
-            <mat-grid-tile *ngFor="let task of tasks">
-                <app-task-item [task]="task"></app-task-item>
-            </mat-grid-tile>
-        </mat-grid-list>
-        <div class="grid-wrapper" *ngIf="!viewAsTile">
-            <ag-grid-angular class="ag-theme-quartz-dark m-2 p-2" class="ag-theme-quartz-dark"
-                style="width: 100%; height: 100%;" (gridReady)="onGridReady($event)"
-                [autoSizeStrategy]="autoSizeStrategy" [rowData]="tasks" [columnDefs]="colDefs">
-            </ag-grid-angular>
-        </div>
-    </div>
-    <ng-template #noTasks>
-        <p class="font-italic text-center">No Tasks to display !!</p>
-    </ng-template>
-    <div *ngIf="error">
-        <p class="font-italic">{{error}}</p>
-    </div>
-</div>
 <div *ngIf="!loaded" class="py-5 d-flex justify-content-center text-primary">
     <div class="spinner-border" role="status">
         <span class="sr-only">Loading...</span>
     </div>
+</div>
+    <mat-toolbar>
+            <mat-toolbar-row>
+                <input [(ngModel)]="searchTerm" type="text" class="form-control rounded" placeholder="Search"
+                    aria-label="Search" aria-describedby="search-addon" (keyup.enter)="onSearch()"/>
+                <button (click)="onSearch()" type="button" class="btn btn-outline-primary" data-mdb-ripple-init><i
+                        class="fa fa-search" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-primary ml-1" (click)="newTaskNavigate()">Add Task</button>
+            </mat-toolbar-row>
+            <mat-toolbar-row class="responsive-grid-toolbar">
+                <button mat-button [matMenuTriggerFor]="viewAsMenu" class="bg-primary text-white ml-1">View As <i class="fa fa-angle-down" aria-hidden="true"></i></button>
+                <mat-menu #viewAsMenu="matMenu">
+                        <a mat-menu-item class="dropdown-item" role="button" (click)="switchView(true)">Thumbnails</a>
+                        <a mat-menu-item class="dropdown-item" role="button" (click)="switchView(false)">List</a>
+                </mat-menu>
+                <button mat-button [matMenuTriggerFor]="statusFilter" class="bg-primary text-white ml-1">Show Status <i class="fa fa-angle-down" aria-hidden="true"></i></button>
+                <mat-menu class="mb-2" #statusFilter="matMenu">
+                    <a mat-menu-item
+                        *ngFor="let status of ['All', 'Todo', 'In Progess', 'Complete']; index as i"
+                        role="button"
+                        (click)="filterByStatus(i-1)">
+                        {{ status }}
+                    </a>
+                </mat-menu>
+                <button mat-button [matMenuTriggerFor]="priorityFilter" class="bg-primary text-white ml-1">Show Priority <i class="fa fa-angle-down" aria-hidden="true"></i></button>
+                <mat-menu class="mb-2" #priorityFilter="matMenu">
+                    <a mat-menu-item
+                        *ngFor="let priority of ['All', 'Low', 'High', 'Critical', 'Blocker']; index as i"
+                        role="button"
+                        (click)="filterByPriority(i-1)">
+                        {{ priority }}
+                    </a>
+                </mat-menu>
+            </mat-toolbar-row>
+    </mat-toolbar>
+
+<div *ngIf="tasks !== undefined && tasks.length > 0; else noTasks">
+    <div class="m-1 responsive-grid" *ngIf="viewAsTile">
+        <app-task-item *ngFor="let task of tasks" [task]="task"></app-task-item>
+    </div>
+    <div class="m-1" *ngIf="!viewAsTile">
+        <ag-grid-angular class="ag-theme-quartz-dark m-2 p-2" class="ag-theme-quartz-dark"
+            style="width: 100%; height: 100%;" (gridReady)="onGridReady($event)" [autoSizeStrategy]="autoSizeStrategy"
+            [rowData]="tasks" [columnDefs]="colDefs">
+        </ag-grid-angular>
+    </div>
+</div>
+<ng-template #noTasks>
+    <p class="font-italic text-center">No Tasks to display !!</p>
+</ng-template>
+<div *ngIf="error">
+    <p class="font-italic">{{error}}</p>
 </div>
