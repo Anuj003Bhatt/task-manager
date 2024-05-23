@@ -3,6 +3,7 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+<div class="m-1">
     <mat-toolbar>
             <mat-toolbar-row>
                 <input [(ngModel)]="searchTerm" type="text" class="form-control rounded" placeholder="Search"
@@ -12,7 +13,7 @@
                 </button>
                 <button class="btn btn-primary ml-1" (click)="newTaskNavigate()">Add Task</button>
             </mat-toolbar-row>
-            <mat-toolbar-row class="responsive-grid-toolbar">
+            <mat-toolbar-row >
                 <button mat-button [matMenuTriggerFor]="viewAsMenu" class="bg-primary text-white ml-1">View As <i class="fa fa-angle-down" aria-hidden="true"></i></button>
                 <mat-menu #viewAsMenu="matMenu">
                         <a mat-menu-item class="dropdown-item" role="button" (click)="switchView(true)">Thumbnails</a>
@@ -38,8 +39,8 @@
                 </mat-menu>
             </mat-toolbar-row>
     </mat-toolbar>
-
-<div *ngIf="tasks !== undefined && tasks.length > 0; else noTasks">
+</div>
+<div class="mt-1" *ngIf="tasks !== undefined && tasks.length > 0; else noTasks">
     <div class="m-1 responsive-grid" *ngIf="viewAsTile">
         <app-task-item *ngFor="let task of tasks" [task]="task"></app-task-item>
     </div>
